@@ -1,0 +1,21 @@
+{
+  "name": "doloverse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "predeploy": "rm -rf doloverse.zip && zip -r doloverse.zip .",
+    "deploy": "aws lambda update-function-code --function-name doloverse --zip-file fileb://doloverse.zip"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^5.6.2",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.0",
+    "process": "^0.11.10"
+  }
+}
