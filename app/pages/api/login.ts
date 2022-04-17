@@ -12,6 +12,7 @@ export default async function handler(
 ) {
   if (req.method !== "POST" || !req.headers.authorization)
     return res.status(405).end();
+  console.log("login");
   // exchange the DID from Magic for some user data
   const did = magic.utils.parseAuthorizationHeader(req.headers.authorization);
   const user = await magic.users.getMetadataByToken(did);

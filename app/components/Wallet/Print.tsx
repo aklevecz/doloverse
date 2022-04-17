@@ -14,16 +14,17 @@ export default function Print({ user }: Props) {
     return <LayoutSpinner />;
   }
 
-  const soldOut = ticketInfo.count >= MAX_SUPPLY;
+  // const soldOut = ticketInfo.count >= MAX_SUPPLY;
+  const soldOut = true;
   return (
     <div className="flex flex-col items-center justify-center w-full text-center">
       <div className="max-w-2xl text-4xl m-10 mb-0">
         Time to print your ticket
       </div>
       <div className="mt-1 mb-5 text-lg text-red-600">
-        {MAX_SUPPLY - ticketInfo.count} / {MAX_SUPPLY} remain
+        {/* {MAX_SUPPLY - ticketInfo.count} / {MAX_SUPPLY} */}0 remain
       </div>
-      {!soldOut && (
+      {/* {!soldOut && (
         <div className="flex flex-col items-center justify-center w-full">
           <ButtonPrint />
           <div className="m-10 mt-7 text-center break-words w-3/4">
@@ -32,9 +33,8 @@ export default function Print({ user }: Props) {
             </div>
             <div className="text-xl mt-4">{user.publicAddress}</div>
           </div>
-          {/* <div className="max-w-2xl text-4xl m-10">{user.email}</div> */}
         </div>
-      )}
+      )} */}
       {soldOut && (
         <div className="flex flex-col items-center justify-center w-full text-5xl px-12 py-20">
           Sorry, but we are sold out!

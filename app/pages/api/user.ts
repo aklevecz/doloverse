@@ -10,7 +10,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       process.env.ENCRYPTION_SECRET!,
       Iron.defaults
     );
-    console.log(user);
   } catch (error) {
     res.status(401).end();
   }

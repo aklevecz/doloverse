@@ -24,6 +24,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(405).json({ error: "HAS_TICKET" });
       }
 
+      // Sale is over
+      return res.status(405).json({ error: "SALE_ENDED" });
+
       const newTokenId = await dolodb.updateTokenCount();
       const params = {
         MessageAttributes: {
