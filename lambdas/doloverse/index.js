@@ -3,14 +3,31 @@ const fetch = require("node-fetch");
 const DolorverseInterface = require("./Doloverse.json");
 // TODO: DEV - PROD
 // require("dotenv").config();
-const DOLOVERSE_ADDRESS = DolorverseInterface.networks.matic;
-const ALCHEMY_KEY = process.env.ALCHEMY_KEY;
 const PP = process.env.PP;
-
-const defaultProvider = new ethers.providers.AlchemyProvider(
-  process.env.NETWORK_NAME,
-  ALCHEMY_KEY
-);
+// shit testing
+const live = process.env.LIVE;
+// shit testing
+console.log(live);
+let DOLOVERSE_ADDRESS = "";
+let ALCHEMY_KEY = "";
+let defaultProvider = null;
+if (live === "PRODUCTION") {
+  DOLOVERSE_ADDRESS = DolorverseInterface.networks.matic;
+  ALCHEMY_KEY = process.env.ALCHEMY_KEY;
+  defaultProvider = new ethers.providers.AlchemyProvider(
+    process.env.NETWORK_NAME,
+    ALCHEMY_KEY
+  );
+}
+if (live === "TESTING") {
+  console.log("is testing");
+  DOLOVERSE_ADDRESS = DolorverseInterface.networks.matic_mum;
+  ALCHEMY_KEY = "h1C7eLL3fxiJwBjBrc-XcnmIm4APmdgj";
+  defaultProvider = new ethers.providers.AlchemyProvider(
+    "maticmum",
+    ALCHEMY_KEY
+  );
+}
 
 const user = {
   publicAddress: "0xa928293bb65eFB978559058e3C39Ef8d730c6f07",

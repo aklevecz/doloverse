@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { HOST } from "../../../constants";
 
 import DoloverseDb from "../../../lib/doloverseDb";
+import ddb from "../../../lib/ddb";
 
 const TICKET_TOKENID_MAX = 40;
 
@@ -14,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!ticket) {
     ticket = await dolodb.queryTicketByTokenId(cleanTokenIdInt);
   }
-  if (cleanTokenIdInt <= 40) {
+  if (cleanTokenIdInt <= TICKET_TOKENID_MAX) {
     if (ticket) {
       if (!ticket.hatched) {
         ticket.name = `Doloverse Ticket ${cleanTokenId}`;
@@ -27,12 +28,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ticket.animation_url = `${HOST}/roll.mp4`;
       }
     }
-  } else if (cleanTokenIdInt > 40) {
+  } else if (cleanTokenIdInt > TICKET_TOKENID_MAX) {
     if (ticket) {
-      // query the egg from markers
-      ticket.name = "Egg";
-      ticket.description = "This is an egg";
-      ticket.image = "https://assets.doloverse.com/daisy.png";
+      const eggParams = {
+        ExpressionAttributeValues: {
+          ":tokenId": cleanTokenIdInt,
+        },
+        IndexName: "tokenId-index",
+        KeyConditionExpression: `tokenId = :tokenId`,
+        TableName: "markers",
+      };
+      const eggResp = await ddb.query(eggParams).promise();
+      if (eggResp.Items) {
+        const egg = eggResp.Items[0];
+        // query the egg from markers
+        ticket.name = egg.marker_name;
+        ticket.description = "This is an egg";
+        ticket.image = `https://assets.doloverse.com/${egg.marker_name}.png`;
+      }
     }
   }
   res.json(ticket);
