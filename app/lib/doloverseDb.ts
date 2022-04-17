@@ -10,6 +10,7 @@ class DoloverseDb {
   _tableName = "doloverse";
   _countTableName = "doloverse-counter";
   _artistTableName = "artists";
+  _eggMarkerTable = "markers";
   constructor() {}
 
   async getLastTokenId() {
@@ -77,6 +78,23 @@ class DoloverseDb {
     const ticket = await ddb.query(params).promise();
     if (ticket && ticket.Items) {
       return ticket.Items[0];
+    } else {
+      return undefined;
+    }
+  }
+
+  async queryEggMarkerByTokenId(tokenId: number) {
+    const params = {
+      ExpressionAttributeValues: {
+        ":tokenId": tokenId,
+      },
+      IndexName: "tokenId-index",
+      KeyConditionExpression: `tokenId = :tokenId`,
+      TableName: "markers",
+    };
+    const marker = await ddb.query(params).promise();
+    if (marker && marker.Items) {
+      return marker.Items[0];
     } else {
       return undefined;
     }

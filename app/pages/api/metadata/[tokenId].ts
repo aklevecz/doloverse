@@ -39,22 +39,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       data = ticket;
     }
   } else if (tokenIdInt > TICKET_TOKENID_MAX) {
-    const eggParams = {
-      ExpressionAttributeValues: {
-        ":tokenId": tokenIdInt,
-      },
-      IndexName: "tokenId-index",
-      KeyConditionExpression: `tokenId = :tokenId`,
-      TableName: "markers",
-    };
-    const eggResp = await ddb.query(eggParams).promise();
-    if (eggResp.Items) {
-      const egg = eggResp.Items[0];
-      // query the egg from markers
+    const egg = await dolodb.queryEggMarkerByTokenId(tokenIdInt);
+    if (egg) {
       data.name = egg.marker_name;
       data.description = "This is an egg";
       data.image = `https://assets.doloverse.com/${egg.marker_name}.png`;
-      // data = egg;
     }
   }
   res.json(data);
