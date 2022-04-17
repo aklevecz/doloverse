@@ -7,7 +7,6 @@ const PP = process.env.PP;
 // shit testing
 const live = process.env.LIVE;
 // shit testing
-console.log(live);
 let DOLOVERSE_ADDRESS = "";
 let ALCHEMY_KEY = "";
 let defaultProvider = null;
@@ -20,9 +19,8 @@ if (live === "PRODUCTION") {
   );
 }
 if (live === "TESTING") {
-  console.log("is testing");
   DOLOVERSE_ADDRESS = DolorverseInterface.networks.matic_mum;
-  ALCHEMY_KEY = "h1C7eLL3fxiJwBjBrc-XcnmIm4APmdgj";
+  ALCHEMY_KEY = process.env.ALCHEMY_KEY_MUMBAI;
   defaultProvider = new ethers.providers.AlchemyProvider(
     "maticmum",
     ALCHEMY_KEY
