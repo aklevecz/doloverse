@@ -10,12 +10,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { tokenId } = req.query;
   const dolodb = new DoloverseDb();
   const cleanTokenId = (tokenId as string).replace(".json", "");
-  const cleanTokenIdInt = parseInt(cleanTokenId);
-  let ticket = await dolodb.queryTicketByTString(cleanTokenId as string);
-  if (!ticket) {
-    ticket = await dolodb.queryTicketByTokenId(cleanTokenIdInt);
+  let tokenIdInt = 0;
+  if (cleanTokenId.length === 64) {
+    tokenIdInt = parseInt(cleanTokenId, 16);
+  } else {
+    tokenIdInt = parseInt(cleanTokenId);
   }
-  if (cleanTokenIdInt <= TICKET_TOKENID_MAX) {
+  // const cleanTokenIdInt = parseInt(cleanTokenId);
+  // let ticket = await dolodb.queryTicketByTString(cleanTokenId as string);
+  // if (!ticket) {
+  //   ticket = await dolodb.queryTicketByTokenId(cleanTokenIdInt);
+  // }
+  let data: any = { name: "", description: "", image: "" };
+  if (tokenIdInt <= TICKET_TOKENID_MAX) {
+    const ticket = await dolodb.queryTicketByTokenId(tokenIdInt);
+
     if (ticket) {
       if (!ticket.hatched) {
         ticket.name = `Doloverse Ticket ${cleanTokenId}`;
@@ -27,28 +36,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ticket.image = `${HOST}/roll_vid.mp4`;
         ticket.animation_url = `${HOST}/roll.mp4`;
       }
+      data = ticket;
     }
-  } else if (cleanTokenIdInt > TICKET_TOKENID_MAX) {
-    if (ticket) {
-      const eggParams = {
-        ExpressionAttributeValues: {
-          ":tokenId": cleanTokenIdInt,
-        },
-        IndexName: "tokenId-index",
-        KeyConditionExpression: `tokenId = :tokenId`,
-        TableName: "markers",
-      };
-      const eggResp = await ddb.query(eggParams).promise();
-      if (eggResp.Items) {
-        const egg = eggResp.Items[0];
-        // query the egg from markers
-        ticket.name = egg.marker_name;
-        ticket.description = "This is an egg";
-        ticket.image = `https://assets.doloverse.com/${egg.marker_name}.png`;
-      }
+  } else if (tokenIdInt > TICKET_TOKENID_MAX) {
+    const eggParams = {
+      ExpressionAttributeValues: {
+        ":tokenId": tokenIdInt,
+      },
+      IndexName: "tokenId-index",
+      KeyConditionExpression: `tokenId = :tokenId`,
+      TableName: "markers",
+    };
+    const eggResp = await ddb.query(eggParams).promise();
+    if (eggResp.Items) {
+      const egg = eggResp.Items[0];
+      // query the egg from markers
+      data.name = egg.marker_name;
+      data.description = "This is an egg";
+      data.image = `https://assets.doloverse.com/${egg.marker_name}.png`;
+      // data = egg;
     }
   }
-  res.json(ticket);
+  res.json(data);
 
   res.status(404).end();
 };
