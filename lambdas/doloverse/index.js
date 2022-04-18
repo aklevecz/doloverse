@@ -10,7 +10,7 @@ const live = process.env.LIVE;
 let DOLOVERSE_ADDRESS = "";
 let ALCHEMY_KEY = "";
 let defaultProvider = null;
-if (live === "PRODUCTION") {
+if (live === "PROD") {
   DOLOVERSE_ADDRESS = DolorverseInterface.networks.matic;
   ALCHEMY_KEY = process.env.ALCHEMY_KEY;
   defaultProvider = new ethers.providers.AlchemyProvider(

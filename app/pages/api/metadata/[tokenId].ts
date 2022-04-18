@@ -27,16 +27,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (ticket) {
       if (!ticket.hatched) {
-        ticket.name = `Doloverse Ticket ${cleanTokenId}`;
-        ticket.description = `This is your ticket to Doloverse. Once it is checked in at the festival grounds it will take a new form.`;
-        ticket.image = `${HOST}/bw-bao.png`;
+        data.name = `Doloverse Ticket ${cleanTokenId}`;
+        data.description = `This is your ticket to Doloverse. Once it is checked in at the festival grounds it will take a new form.`;
+        data.image = `${HOST}/bw-bao.png`;
       } else {
-        ticket.name = `Doloverse Transformed Ticket ${cleanTokenId}`;
-        ticket.description = `This is your ticket to Doloverse. You are checked in and ready to enjoy the show!`;
-        ticket.image = `${HOST}/roll_vid.mp4`;
-        ticket.animation_url = `${HOST}/roll.mp4`;
+        data.name = `Doloverse Transformed Ticket ${cleanTokenId}`;
+        data.description = `This is your ticket to Doloverse. You are checked in and ready to enjoy the show!`;
+        data.image = `${HOST}/roll_vid.mp4`;
+        data.animation_url = `${HOST}/roll.mp4`;
       }
-      data = ticket;
     }
   } else if (tokenIdInt > TICKET_TOKENID_MAX) {
     const egg = await dolodb.queryEggMarkerByTokenId(tokenIdInt);
